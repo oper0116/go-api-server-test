@@ -1,4 +1,4 @@
-module api-server/main
+module go-api-server-test
 
 go 1.18
 

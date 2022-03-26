@@ -1,8 +1,8 @@
 package main
 
 import (
-	"api-server/main/store"
 	"fmt"
+	"go-api-server-test/store"
 	"net/http"
 
 	"github.com/gorilla/handlers"
