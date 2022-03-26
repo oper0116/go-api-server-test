@@ -1,10 +1,17 @@
 package main
 
 import (
-	"encoding/json"
+	"api-server/main/store"
 	"fmt"
 	"net/http"
+
+	"github.com/gorilla/handlers"
 )
+
+type apiHandler struct{}
+
+func (apiHandler) ServeHTTP(http.ResponseWriter, *http.Request) {}
+
 
 var users = map[string]*User{}
 
@@ -13,38 +20,22 @@ type User struct {
     Name string `json:"name"`
 }
 
-func jsonContentTypeMiddleware(next http.Handler) http.Handler {
-    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-        w.Header().Set("Content-Type", "application/json")
-        next.ServeHTTP(w, r);
-    })
-}
+
 
 func main() {
     fmt.Println("START Server Port 8080")
 
-    mux := http.NewServeMux();
-    
-    rootHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-        w.Write([]byte("Hello World"))
-    })
+    // mux := http.NewServeMux();
 
-    userHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-        switch r.Method {
-            case http.MethodGet:
-                json.NewEncoder(w).Encode((users))
-            case http.MethodPost:
-                var user User
-                json.NewDecoder(r.Body).Decode(&user)
-                users[user.Id] = &user
+    router := store.NewRouter();
 
-                json.NewEncoder(w).Encode(user)
-                fmt.Printf("%+v", user)
-        }
-    })
+    allowedOrigins := handlers.AllowedOrigins([]string{"*"}) 
+ 	allowedMethods := handlers.AllowedMethods([]string{"GET", "POST", "DELETE", "PUT"})
+    http.ListenAndServe(":8080", handlers.CORS(allowedOrigins, allowedMethods)(router))
 
-    mux.Handle("/", jsonContentTypeMiddleware(rootHandler))
-    mux.Handle("/users", jsonContentTypeMiddleware(userHandler))
+    // mux.Handle("/api/", apiHandler{})
+    // mux.Handle("/users", jsonContentTypeMiddleware(userHandler))
+    // mux.Handle("/", jsonContentTypeMiddleware(rootHandler))
 
-    http.ListenAndServe(":8080", mux)
+    // http.ListenAndServe(":8080", mux)
 }
