@@ -1,13 +1,14 @@
-package store
+package router
 
 import (
+	"go-api-server-test/store"
 	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
 )
 
-var controller = &Controller{Repository: Repository{}}
+var controller = &store.Controller{Repository: store.Repository{}}
 
 type Route struct {
 	Name        string
@@ -49,11 +50,3 @@ func NewRouter() *mux.Router {
 	}
 	return router
 }
-
-
-// func ContentTypeApplicationJsonMiddleware(next http.Handler) http.Handler {
-// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-// 			w.Header().Set("Content-Type", "application/json")
-// 			next.ServeHTTP(w, r);
-// 	})
-// }

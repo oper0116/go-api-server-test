@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"go-api-server-test/store"
+	"go-api-server-test/router"
 	"net/http"
 
 	"github.com/gorilla/handlers"
@@ -27,7 +27,7 @@ func main() {
 
     // mux := http.NewServeMux();
 
-    router := store.NewRouter();
+    router := router.NewRouter();
 
     allowedOrigins := handlers.AllowedOrigins([]string{"*"}) 
  	allowedMethods := handlers.AllowedMethods([]string{"GET", "POST", "DELETE", "PUT"})
